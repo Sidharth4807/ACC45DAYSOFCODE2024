@@ -1,0 +1,82 @@
+import java.awt.*;
+import java.awt.event.*;
+
+
+
+class MenuExample
+{
+
+    public static void main(String args[])
+{
+new MenuExample();
+new PopupMenuExample();
+
+}
+
+MenuExample(){
+Frame f=new Frame("Menu and MenuItem Example");
+MenuBar mb=new MenuBar();
+Menu menu=new Menu("Menu");
+Menu submenu=new Menu("Sub Menu");
+PopupMenuExample var =new PopupMenuExample();
+MenuItem i1=new MenuItem("Item1");
+MenuItem i2=new MenuItem("Item2");
+MenuItem i3=new MenuItem("Item3");
+MenuItem i4=new MenuItem("Item4");
+MenuItem i5=new MenuItem("Item5");
+
+
+
+//adding Items with menu
+menu.add(i1);
+menu.add(i2);
+menu.add(i3);
+
+//adding Items with submenu
+submenu.add(i4);
+submenu.add(i5);
+
+//adding submenu with menu
+menu.add(submenu);
+
+//adding menu with menubar
+mb.add(menu);
+f.setMenuBar(mb);
+f.setSize(400,400);
+f.setLayout(null);
+f.setVisible(true);
+}
+}
+class PopupMenuExample{
+PopupMenuExample(){
+Frame f=new Frame("PopupMenu Example");
+PopupMenu popupmenu=new PopupMenu("Edit");
+MenuItem cut=new MenuItem("Cut");
+MenuItem copy=new MenuItem("Copy");
+MenuItem paste=new MenuItem("Paste");
+MenuItem refresh=new MenuItem("Refresh");
+MenuItem properties=new MenuItem("Properties");
+
+
+
+popupmenu.add(cut);
+popupmenu.add(copy);
+popupmenu.add(paste);
+popupmenu.add(refresh);
+popupmenu.add(properties);
+
+f.addMouseListener(new MouseAdapter(){
+public void mouseClicked(MouseEvent e){
+popupmenu.show(f,e.getX(),e.getY());
+}
+});
+
+f.add(popupmenu);
+f.setSize(400,400);
+f.setLayout(null);
+f.setVisible(true);
+}
+
+
+
+}
