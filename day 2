@@ -1,0 +1,117 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+public class SimpleNotepad extends JFrame {
+
+    private JTextArea textArea;
+    private JFileChooser fileChooser;
+
+    public SimpleNotepad() {
+        setTitle("Simple Notepad");
+        setSize(600, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        textArea = new JTextArea();
+        add(new JScrollPane(textArea), BorderLayout.CENTER);
+
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text files (*.txt)", "txt"));
+
+        createMenuBar();
+
+        setLocationRelativeTo(null);
+    }
+
+    private void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem newItem = new JMenuItem("New");
+        JMenuItem openItem = new JMenuItem("Open");
+        JMenuItem saveItem = new JMenuItem("Save");
+        JMenuItem exitItem = new JMenuItem("Exit");
+
+
+        JMenu editMenu = new JMenu("Edit");
+        JMenuItem copyItem = new JMenuItem("copy");
+        JMenuItem cutItem = new JMenuItem("cut");
+        JMenuItem pasteItem = new JMenuItem("paste");
+        JMenuItem selectItem = new JMenuItem("select");
+        editMenu.add(copyItem);
+        editMenu.add(cutItem);
+        editMenu.add(pasteItem);
+        editMenu.add(selectItem);
+        
+        JMenu formatMenu = new JMenu("Format");
+        JMenuItem word_wrapItem = new JMenuItem("word wrap");
+        JMenuItem fontItem = new JMenuItem("font");
+        formatMenu.add(word_wrapItem);
+        formatMenu.add(fontItem);
+        
+        JMenu viewMenu = new JMenu("View");
+        JMenuItem zoomItem = new JMenuItem("Zoom");
+        JMenuItem status_barItem = new JMenuItem("Status bar");
+        viewMenu.add(zoomItem);
+        viewMenu.add(status_barItem);
+
+
+        newItem.addActionListener(e -> textArea.setText(""));
+        openItem.addActionListener(e -> openFile());
+        saveItem.addActionListener(e -> saveFile());
+        exitItem.addActionListener(e -> System.exit(0));
+
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+        
+        menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+        menuBar.add(formatMenu);
+        menubar.add(viewMenu);
+        setJMenuBar(menuBar);
+    }
+
+    private void openFile() {
+        int returnValue = fileChooser.showOpenDialog(this);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                textArea.setText("");
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    textArea.append(line + "\n");
+                }
+            } catch (IOException e) {
+                showError("Error opening file: " + e.getMessage());
+            }
+        }
+    }
+
+    private void saveFile() {
+        int returnValue = fileChooser.showSaveDialog(this);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(textArea.getText());
+            } catch (IOException e) {
+                showError("Error saving file: " + e.getMessage());
+            }
+        }
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            SimpleNotepad notepad = new SimpleNotepad();
+            notepad.setVisible(true);
+        });
+    }
+}
